@@ -1,8 +1,21 @@
-require('dotenv').load();
+//  They Should Make – retweeting people's suggestions
+//  Razi Shaban – 1/5/16 
+// 
+// This code monitors the Twitter stream for people saying "they should make"
+// and retweets if the post hits a like + retweet threshold within a time lapse
 
-var delay = 1000              // how long after tweeting to wait
+
+
+// User parameters 
+
+var delay = 10000              // how long after tweeting to wait
 var retweet_threshold = 3     // how many combined likes + retweets necessary to retweet
+var phrase = "they should make"
 
+
+// making our twitter object
+
+require('dotenv').load();     // checks .env for all our secret parameters
 var Twit = require('twit');
 
 var T = new Twit({
@@ -11,6 +24,9 @@ var T = new Twit({
   , access_token:         process.env.ACCESS_TOKEN
   , access_token_secret:  process.env.ACCESS_TOKEN_SECRET
 });
+
+
+// the function we call on each tweet after a delay
 
 var check_and_retweet = function (id, retweet_threshold) {
   T.get('statuses/show/'.concat(id), function (err, data, response) {
@@ -25,7 +41,7 @@ var check_and_retweet = function (id, retweet_threshold) {
     if (data['in_reply_to_status_id'] || data['quoted_status']) { return; }
     if (data['retweet_count'] + data['favorite_count'] < retweet_threshold) { return; }
 
-    if (data['text'].toLowerCase().indexOf("they should make") === -1) { return; }
+    if (data['text'].toLowerCase().indexOf(phrase) === -1) { return; }
 
     T.post('statuses/retweet/:id', { id: id }, function (err, data, response) {
       console.log('Retweeted '.concat(id));
@@ -33,6 +49,8 @@ var check_and_retweet = function (id, retweet_threshold) {
 
   });
 }
+
+// Monitor the Twitter stream and call check_and_retweet after a delay
 
 var stream = T.stream('statuses/filter', { track: 'they should make' });
 
