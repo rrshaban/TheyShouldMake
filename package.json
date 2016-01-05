@@ -1,0 +1,25 @@
+{
+  "name": "theyshouldmake",
+  "version": "0.0.1",
+  "description": "Twitter bot retweeting instances of \"they should make\"",
+  "main": "v1.js",
+  "dependencies": {
+    "node-twitterbot": "^0.2.2",
+    "dotenv": "^1.2.0",
+    "twit": "^2.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rrshaban/TheyShouldMake.git"
+  },
+  "author": "Razi Shaban",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rrshaban/TheyShouldMake/issues"
+  },
+  "homepage": "https://github.com/rrshaban/TheyShouldMake#readme"
+}

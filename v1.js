@@ -8,14 +8,14 @@
 
 // User parameters 
 
-var delay = 10000              // how long after tweeting to wait
-var retweet_threshold = 3     // how many combined likes + retweets necessary to retweet
+var delay = 10000                 // how long after tweeting to wait
+var retweet_threshold = 3         // how many combined likes + retweets necessary to retweet
 var phrase = "they should make"
 
 
 // making our twitter object
 
-require('dotenv').load();     // checks .env for all our secret parameters
+require('dotenv').load();         // checks .env for all our secret parameters
 var Twit = require('twit');
 
 var T = new Twit({
