@@ -3,8 +3,8 @@
 // 
 // This code monitors the Twitter stream for people saying "they should make"
 // and retweets if the post hits a like + retweet threshold within a time lapse
-
-
+//
+// This is my first JS project, so please point out where I could improve the code
 
 // User parameters 
 
@@ -56,5 +56,6 @@ var stream = T.stream('statuses/filter', { track: 'they should make' });
 
 stream.on('tweet', function (tweet) {
   var id = tweet['id_str'];
+  console.log(tweet['text']);
   setTimeout(check_and_retweet, delay, id, retweet_threshold);
 });

@@ -4,7 +4,6 @@
   "description": "Twitter bot retweeting instances of \"they should make\"",
   "main": "v1.js",
   "dependencies": {
-    "node-twitterbot": "^0.2.2",
     "dotenv": "^1.2.0",
     "twit": "^2.1.1"
   },
