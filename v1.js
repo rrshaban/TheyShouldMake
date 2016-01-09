@@ -32,6 +32,9 @@ var check_and_retweet = function (id, retweet_threshold) {
   T.get('statuses/show/'.concat(id), function (err, data, response) {
     
     if (err) {
+      if (err['code'] === 88) {
+        // NEED TO WAIT, otherwise I'll probably get banned for jamming :( :( :(
+      }
       console.log(err);
       return;
     }
