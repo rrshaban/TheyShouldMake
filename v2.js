@@ -6,22 +6,18 @@
 //
 // This is my first JS project, so please point out where I could improve the code
 
-// User parameters 
 
-var delay = 10000                 // how long after tweeting to wait
-var retweet_threshold = 3         // how many combined likes + retweets necessary to retweet
-var query = { q: "they should make", 
-              count: 100, 
-              result_type: "recent",
-              // until: // YYYY-MM-DD TODO: maybe only load last day's tweets
-              }; // result_type: recent/popular/mixed
-
-
-// making our twitter object
-
-require('dotenv').load();         // checks .env for all our secret parameters
+require('dotenv').load(); 
 var Twit = require('twit');
 
+
+// User parameters 
+
+var interval = 10000                  // how long after tweeting to wait
+var likes_and_RTs = 3      
+var query = { q: "they should make", count: 100, result_type: "recent" };
+
+ 
 var T = new Twit({
     consumer_key:         process.env.CONSUMER_KEY
   , consumer_secret:      process.env.CONSUMER_SECRET
@@ -29,41 +25,33 @@ var T = new Twit({
   , access_token_secret:  process.env.ACCESS_TOKEN_SECRET
 });
 
-var check_and_retweet = function (query, retweet_threshold) {
+
+var check_and_retweet = function (query, likes_and_RTs) {
   T.get('search/tweets', query, function (error, data) {
-    console.log(data.statuses.length);
     if (!error) {
       for (var i in data.statuses) {
         var tweet = data.statuses[i];
-        var id = tweet.id_str;
         
-        // console.log(i);
-
+        // does tweet contain our phrase? 
+        // Twitter API doesn't seem to allow strict phrase searching?         [REVISE]
         if (tweet.text.toLowerCase().indexOf(query.q) === -1) { continue; }
 
-        if (tweet.retweeted) { continue; }
+        // is it a RT/quote? have we already retweeted it?
+        if (tweet.retweeted) { continue; } // [TODO: not sure this works]     [TODO]
         if (tweet.quoted_status || tweet.retweeted_status) { continue; }
 
-        if (tweet.retweet_count + tweet.favorite_count < retweet_threshold) { continue; }
+        // is tweet good enough to RT?
+        if (tweet.retweet_count + tweet.favorite_count < likes_and_RTs) { continue; }
 
-        T.post('statuses/retweet/:id', { id: id }, function (error, data, response) {
-          if (response) {
-            console.log('Retweeted '.concat(id));
-          }
-          if (error) {
-            console.log('Twitter error: ', error);
-          }
+
+        T.post('statuses/retweet/:id', { id: tweet.id_str }, function (error, data, response) {
+          if (response) { console.log('Retweeted: '.concat(tweet.text));}
+          if (error) { console.log('Twitter error: ', error); }
         });
 
       }
-    } else { // error searching for tweets
-      console.log(error);
-    }
-
+    } else { console.log(error); }
   });
-
 }
 
-// TODO: change from running only once
-check_and_retweet(query, retweet_threshold);
-// setInterval(check_and_retweet, delay, query, retweet_threshold);
+setInterval(check_and_retweet, interval, query, retweet_threshold);
